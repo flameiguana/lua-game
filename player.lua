@@ -12,8 +12,8 @@ Player.new = function (startingpos, sprite)
 	player.sprite = sprite
 	player.quads = 
 	{
-	left = love.graphics.newQuad(0, 0, 32, 32, 64, 64),
-	right = love.graphics.newQuad(32, 0, 32, 32, 64, 64)
+		left = love.graphics.newQuad(0, 0, 32, 32, 64, 64),
+		right = love.graphics.newQuad(32, 0, 32, 32, 64, 64)
 	}
 	player.box = AABB.new(startingpos, 32, 32)
 	player.activeq = "right"
@@ -122,5 +122,5 @@ function Player:takeDamage(amount)
 end
 
 function Player:draw()
-	love.graphics.drawq(self.sprite, self.quads[self.activeq], self.box.pos.x, self.box.pos.y)
+	love.graphics.draw(self.sprite, self.quads[self.activeq], self.box.pos.x, self.box.pos.y)
 end

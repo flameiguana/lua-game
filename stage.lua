@@ -1,11 +1,12 @@
 Stage = {}
 Stage.__index = Stage
 
-function Stage.new(player)
+function Stage.new(player, platform)
 	local stage = {}
 	stage.tmap = nil
 	stage.tileSize = 32
 	stage.player = player
+	stage.platform = platform
 	stage.obs = {}
 	stage.spriteBatch = nil
 	setmetatable(stage, Stage)
@@ -13,13 +14,13 @@ function Stage.new(player)
 end
 
 --[[
-1. Calculate motion, store in seperate vector
-2. Determine collisions using this position, checking solid tiles
-	a. Scan up to 3 block to right or left of player. 
-	b. Scan below player up to 3 blocks, starting at ceiling[foot of player-1] 
-3. Adjust position if necessary so that it never goes through object.
-4. Apply motion vector
-5. Draw player and tiles
+	1. Calculate motion, store in seperate vector
+	2. Determine collisions using this position, checking solid tiles
+		a. Scan up to 3 block to right or left of player. 
+		b. Scan below player up to 3 blocks, starting at ceiling[foot of player-1] 
+	3. Adjust position if necessary so that it never goes through object.
+	4. Apply motion vector
+	5. Draw player and tiles
 --]]
 
 -- IMPORTANT: Draw function should start at 32,32, since everything is one off
@@ -33,7 +34,7 @@ local function parseMap(self, map)
 		tmap[y] = {}
 		for x = 1, columns do 
 			local tile  = Tile.new(Vector.new((x-1)*self.tileSize,(y-1)*32), 32, map[y][x], map[y][x]) 
-			self.spriteBatch:addq(Tile.quads[tile.graphic], (x-1)*self.tileSize, (y-1)*self.tileSize)  --should be addq in final version
+			self.spriteBatch:add(Tile.quads[tile.graphic], (x-1)*self.tileSize, (y-1)*self.tileSize)  --should be addq in final version
 			tmap[y][x] = tile 
 		end  
 	end
@@ -120,7 +121,6 @@ function Stage:verticalCheck()
 	return self.obs
 end
 
-
 function Stage:load(map)
 	--loads all tile graphics and makes tmap
 	local block = love.graphics.newImage("block.png")
@@ -129,7 +129,12 @@ function Stage:load(map)
 	self.tmap = parseMap(self, map)
 end
 
+function Stage:setup()
+end
+
 function Stage:update()
+	time = love.timer.getTime()
+	self.platform:step(time)
 	self.player:moveX(self)
 	for k,v in pairs(self.obs) do self.obs[k]= nil end
 	self.player:moveY(self)
@@ -139,4 +144,6 @@ end
 function Stage:draw()
 	love.graphics.draw(self.spriteBatch,0,0)
 	self.player:draw()
+	--self.platform:draw()
+	love.graphics.print("FPS: "..tostring(love.timer.getFPS( )), 10, 10)
 end

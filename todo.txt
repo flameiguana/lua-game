@@ -6,8 +6,8 @@ https://love2d.org/wiki/Tutorial:Efficient_Tile-based_Scrolling
 Tile:
 Has info about what to draw, so store pointer to quad in tile file (a few quads, one per type)
 Should it also store image? No
-Time for delegates: Have simple functions that each type of tile can perform
-a delegate is stored in tile so that it can be called using the same function name.
+Time for delegates: Have simple functions that each type of tile can perform a delegate is stored in tile so that it can be called using the same function name.
+
 Some functions:
 -Dissappear: deletes itself when collided with. Add a flag so that tilemap can change to blacnk tile,
  or change to a transparent tile
@@ -22,5 +22,6 @@ Stage: Maybe have a seperate tilemap class
 Tiles: Maybe have tiles themselves adjust player position
 
 Note:
-Once subclasses are implemented resonably, and drawing becomes the same,
-put draw method in superclass
+Once subclasses are implemented reasonably, and drawing becomes the same, put draw method in superclass
+
+160812759
