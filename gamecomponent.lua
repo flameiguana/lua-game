@@ -4,7 +4,7 @@ GameComponent = class ('GameComponent')
 
 --empty functions, in case we call them in subclasses
 function GameComponent:initialize()
-	
+	self.gameObject = nil --no object attched to this script
 end
 
 function GameComponent:start()
@@ -31,14 +31,19 @@ end
 
 function GameObject:addComponent(Type)
 	local instanceOfType = Type:new()
+
+	instanceOfType.gameObject = self
+
 	--add publicly accesible variable. TODO: make fist letter lowercase
 	--you can access like this: gameObject.Type (eg. player.boundingBox)
 	self[Type.name] = instanceOfType
-	
+
 	--if this is a component that updates, add to list
 	if Type.canUpdate then
 		self.updatingComponents = {next = self.updatingComponents, value = instanceOfType}
 	end
+
+	return instanceOfType
 end
 
 --updates all attached components

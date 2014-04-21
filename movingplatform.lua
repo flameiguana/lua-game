@@ -19,7 +19,7 @@ function MovingPlatform.new(pos, sprite, cycleTime)
 	mp.sprite = sprite
 	mp.startedCycle = false
 	
-	mp.box = AABB.new(pos, sprite:getWidth(), sprite:getHeight())
+	mp.box = AABB:new(pos, sprite:getWidth(), sprite:getHeight())
 	setmetatable(mp, MovingPlatform)
 	return mp
 end

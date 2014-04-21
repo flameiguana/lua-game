@@ -56,11 +56,11 @@ end
 
 function Stage:horizontalCheck()
 	local finished = false
-	local rightEdge = math.floor((self.player.box.pos.x + self.player.box.width)/self.tileSize)
+	local rightEdge = math.floor((self.player.AABB.pos.x + self.player.AABB.width)/self.tileSize)
 	local rightLimit  = rightEdge + 3
-	local topRow = math.floor((self.player.box.pos.y)/self.tileSize)
-	local botRow = topRow + math.floor(self.player.box.height-1/self.tileSize)
-	if self.player.facingRight then
+	local topRow = math.floor((self.player.AABB.pos.y)/self.tileSize)
+	local botRow = topRow + math.floor(self.player.AABB.height-1/self.tileSize)
+	if self.player.Player.facingRight then
 	--look right up to 3
 		for col = rightEdge, rightLimit do 
 			if finished then break end
@@ -74,7 +74,7 @@ function Stage:horizontalCheck()
 	else
 		--We make it one less so that it doesn't treat block below player
 		--as a collision block
-		local leftEdge = math.floor((self.player.box.pos.x-1)/self.tileSize)
+		local leftEdge = math.floor((self.player.AABB.pos.x-1)/self.tileSize)
 		local leftLimit = leftEdge - 3
 		for col = leftEdge, leftLimit, -1 do
 			if finished then break end
@@ -91,11 +91,11 @@ end
 
 function Stage:verticalCheck()
 	local finished = false
-	local botEdge = math.floor((self.player.box.pos.y + self.player.box.height)/self.tileSize)
+	local botEdge = math.floor((self.player.AABB.pos.y + self.player.AABB.height)/self.tileSize)
 	local botLimit = botEdge + 3
-	local leftEdge = math.floor((self.player.box.pos.x)/self.tileSize)
-	local rightEdge = leftEdge + math.floor(self.player.box.width/self.tileSize)
-	if (not self.player.goingUp) then
+	local leftEdge = math.floor((self.player.AABB.pos.x)/self.tileSize)
+	local rightEdge = leftEdge + math.floor(self.player.AABB.width/self.tileSize)
+	if (not self.player.Player.goingUp) then
 		for row = botEdge, botLimit do
 			if finished then break end
 			for col = leftEdge, rightEdge do
@@ -106,7 +106,7 @@ function Stage:verticalCheck()
 			end
 		end
 	else
-	local topEdge = math.floor((self.player.box.pos.y)/self.tileSize)
+	local topEdge = math.floor((self.player.AABB.pos.y)/self.tileSize)
 	local topLimit = topEdge - 3
 		for row = topEdge, topLimit, -1 do
 			if finished then break end
@@ -135,15 +135,15 @@ end
 function Stage:update()
 	time = love.timer.getTime()
 	self.platform:step(time)
-	self.player:moveX(self)
+	self.player.Player:moveX(self)
 	for k,v in pairs(self.obs) do self.obs[k]= nil end
-	self.player:moveY(self)
+	self.player.Player:moveY(self)
 	for k,v in pairs(self.obs) do self.obs[k]= nil end
 end
 
 function Stage:draw()
 	love.graphics.draw(self.spriteBatch,0,0)
-	self.player:draw()
+	self.player.Player:draw()
 	--self.platform:draw()
 	love.graphics.print("FPS: "..tostring(love.timer.getFPS( )), 10, 10)
 end

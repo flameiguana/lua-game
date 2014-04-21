@@ -1,6 +1,4 @@
 class = require 'middleclass'
-
-
 require("player")
 require("aabb")
 require("vector")
@@ -39,11 +37,21 @@ function love.load()
 	sprPlatform = love.graphics.newImage("mvplatform.png")
 
 	platform = MovingPlatform.new(Vector.new(10, 350), sprPlatform, 5.0)
-	player = Player.new(Vector.new(30,30), sprPlayer)
+	--player = Player.new(Vector.new(30,30), sprPlayer)
+	player = GameObject:new()
+	local playerBox = player:addComponent(AABB)
+	playerBox.position = Vector.new(30,30)
+	playerBox.width = 32
+	playerBox.height = 32
+
+	player:addComponent(Player)
+	--set sprite here
+	player.Player.sprite = sprPlayer
+
 	stage = Stage.new(player, platform)
 	stage:load(map)
 	stage:setup()
-	
+
 	--test component system
 	testObject = GameObject:new()
 	testObject:addComponent(Test)

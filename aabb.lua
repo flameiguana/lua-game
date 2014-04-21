@@ -1,14 +1,21 @@
+
+AABB = class('AABB', GameComponent)
+
+--[[
+
 AABB = {}
 AABB.__index = AABB
 
+]]
+
 --Note: Uses left edge as origin.
-function AABB.new(pos, width, height)
-	local aabb = {}
-	aabb.pos = pos
-	aabb.width = width
-	aabb.height = height
-	setmetatable(aabb, AABB)
-	return aabb
+
+--if we ever allow passing of parameters, we would be ready to go.
+--for now just sets default values when params are nil
+function AABB:initialize(pos, width, height)
+	self.pos = pos or Vector.new()
+	self.width = width or 0
+	self.height = height or 0
 end
 
 --Private functions

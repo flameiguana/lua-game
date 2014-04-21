@@ -35,7 +35,7 @@ function Tile.new(pos, tileSize, tileType, graphic)
 	--this is temporary
 	tile.solid = (tileType ~= 0) or false
 	if tile.solid then
-		tile.box = AABB.new(pos, tileSize, tileSize)
+		tile.box = AABB:new(pos, tileSize, tileSize)
 	end
 	
 	if tileType == 2 then
