@@ -47,11 +47,13 @@ local function _setClassMetatable(aClass)
     __tostring = function() return "class " .. aClass.name end,
     __index    = aClass.static,
     __newindex = aClass.__instanceDict,
+    --makes SomeClass(args) the same as SomeClass:new(args)
     __call     = function(self, ...) return self:new(...) end
   })
 end
-
+--name is string, super is a table,
 local function _createClass(name, super)
+  --static is a table
   local aClass = { name = name, super = super, static = {}, __mixins = {}, __instanceDict={} }
   aClass.subclasses = setmetatable({}, {__mode = "k"})
 
@@ -95,8 +97,10 @@ local function _includeMixin(aClass, mixin)
   aClass.__mixins[mixin] = true
 end
 
+--defining the object class, with super class of nil
 local Object = _createClass("Object", nil)
 
+--define all available metamethods
 Object.static.__metamethods = { '__add', '__call', '__concat', '__div', '__ipairs', '__le',
                                 '__len', '__lt', '__mod', '__mul', '__pairs', '__pow', '__sub',
                                 '__tostring', '__unm'}
@@ -171,12 +175,13 @@ end
 
 
 function middleclass.class(name, super, ...)
-  super = super or Object
+  super = super or Object --super class defaults to object if not provided
   return super:subclass(name, ...)
 end
 
 middleclass.Object = Object
 
+--Replaces __call method, which equates to overloading the () operator
 setmetatable(middleclass, { __call = function(_, ...) return middleclass.class(...) end })
 
 return middleclass

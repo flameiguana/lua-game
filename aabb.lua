@@ -13,7 +13,7 @@ AABB.__index = AABB
 --if we ever allow passing of parameters, we would be ready to go.
 --for now just sets default values when params are nil
 function AABB:initialize(pos, width, height)
-	self.pos = pos or Vector.new()
+	self.pos = pos or Vector:new()
 	self.width = width or 0
 	self.height = height or 0
 end

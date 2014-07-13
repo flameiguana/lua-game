@@ -1,50 +1,39 @@
-Vector = {}
-Vector.__index = Vector
+Vector = class('Vector')
 
-function Vector.__add(a, b)
-  if type(a) == "number" then
-    return Vector.new(b.x + a, b.y + a)
-  elseif type(b) == "number" then
-    return Vector.new(a.x + b, a.y + b)
+function Vector:__add(b)
+  if type(b) == "number" then
+    return Vector:new(self.x + b, self.y + b)
   else
-    return Vector.new(a.x + b.x, a.y + b.y)
+    return Vector:new(self.x + b.x, self.y + b.y)
   end
 end
 
-
-
-function Vector.__sub(a, b)
-  if type(a) == "number" then
-    return Vector.new(b.x - a, b.y - a)
-  elseif type(b) == "number" then
-    return Vector.new(a.x - b, a.y - b)
+function Vector:__sub(b)
+  if type(b) == "number" then
+    return Vector:new(self.x - b, self.y - b)
   else
-    return Vector.new(a.x - b.x, a.y - b.y)
+    return Vector:new(self.x - b.x, self.y - b.y)
   end
 end
 
-function Vector.__mul(a, b)
-  if type(a) == "number" then
-    return Vector.new(b.x * a, b.y * a)
-  elseif type(b) == "number" then
-    return Vector.new(a.x * b, a.y * b)
+function Vector:__mul(b)
+  if type(b) == "number" then
+    return Vector:new(self.x * b, self.y * b)
   else
-    return Vector.new(a.x * b.x, a.y * b.y)
+    return Vector:new(self.x * b.x, self.y * b.y)
   end
 end
 
-function Vector.__div(a, b)
-  if type(a) == "number" then
-    return Vector.new(b.x / a, b.y / a)
-  elseif type(b) == "number" then
-    return Vector.new(a.x / b, a.y / b)
+function Vector:__div(b)
+  if type(b) == "number" then
+    return Vector:new(self.x / b, self.y / b)
   else
-    return Vector.new(a.x / b.x, a.y / b.y)
+    return Vector:new(self.x / b.x, self.y / b.y)
   end
 end
 
-function Vector.__eq(a, b)
-  return a.x == b.x and a.y == b.y
+function Vector__eq(b)
+  return self.x == b.x and self.y == b.y
 end
 
 function Vector.__lt(a, b)
@@ -59,16 +48,17 @@ function Vector.__tostring(a)
   return "(" .. a.x .. ", " .. a.y .. ")"
 end
 
-function Vector.new(x, y)
-  return setmetatable({ x = x or 0, y = y or 0 }, Vector)
+function Vector:initialize(x, y)
+  self.x = x or 0
+  self.y = y or 0
 end
 
-function Vector.distance(a, b)
+function Vector.static.distance(a, b)
   return (b - a):len()
 end
 
 function Vector:clone()
-  return Vector.new(self.x, self.y)
+  return Vector:new(self.x, self.y)
 end
 
 function Vector:copy(b)
@@ -112,7 +102,7 @@ function Vector:rotated(phi)
 end
 
 function Vector:perpendicular()
-  return Vector.new(-self.y, self.x)
+  return Vector:new(-self.y, self.x)
 end
 
 function Vector:projectOn(other)
@@ -133,4 +123,3 @@ function Vector:floor()
 	self.x = math.floor(self.x)
 	self.y = math.floor(self.y)
 end
-setmetatable(Vector, { __call = function(_, ...) return Vector.new(...) end })

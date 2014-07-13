@@ -1,4 +1,4 @@
-class = require 'middleclass'
+class = require("middleclass")
 require("player")
 require("aabb")
 require("vector")
@@ -7,11 +7,13 @@ require("tile")
 require("inherit")
 require("movingplatform")
 require("gamecomponent")
+require("gameobject")
 
 
 local player
 local framerate = 10
 local testObject
+local stage
 
 function love.load()
 
@@ -23,7 +25,7 @@ function love.load()
 
 
 	love.window.setMode(640, 480, {fullscreen = false})
-	map = {
+	local map = {
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 		{0,0,0,1,1,0,1,0,0,0,0,0,0,0},
 		{0,0,0,1,1,0,0,0,0,0,0,0,0,0},
@@ -33,28 +35,31 @@ function love.load()
 		{1,1,1,1,2,1,1,1,1,0,0,0,0,0},
 		{1,1,1,1,0,0,1,1,1,1,1,1,1,1}
 	}
-	sprPlayer = love.graphics.newImage("player.png")
 	sprPlatform = love.graphics.newImage("mvplatform.png")
+	platform = MovingPlatform.new(Vector:new(10, 350), sprPlatform, 5.0)
 
-	platform = MovingPlatform.new(Vector.new(10, 350), sprPlatform, 5.0)
-	--player = Player.new(Vector.new(30,30), sprPlayer)
+	stage = Stage.new(platform)
+	stage:load(map)
+	stage:setup()
+
+	sprPlayer = love.graphics.newImage("player.png")
+
+
+	
+	--player = Player.new(Vector:new(30,30), sprPlayer)
 	player = GameObject:new()
 	local playerBox = player:addComponent(AABB)
-	playerBox.position = Vector.new(30,30)
+	playerBox.position = Vector:new(30,30)
 	playerBox.width = 32
 	playerBox.height = 32
 
 	player:addComponent(Player)
-	--set sprite here
+	--set values here
 	player.Player.sprite = sprPlayer
-
-	stage = Stage.new(player, platform)
-	stage:load(map)
-	stage:setup()
-
+	player.Player.stage = stage
 	--test component system
 	testObject = GameObject:new()
-	testObject:addComponent(Test)
+	--testObject:addComponent(Test)
 end
 
 function love.keypressed(key, unicode)
@@ -65,6 +70,7 @@ end
 
 function love.update(dt)
 	stage:update()
+	player:update()
 	testObject:update()
 end
 
@@ -73,5 +79,5 @@ function love.draw()
 	--translation = translation + .5
 	love.graphics.translate(translation, 0)
 	stage:draw()
-
+	player:draw()
 end

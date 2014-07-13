@@ -1,9 +1,12 @@
-
-
 Player = class('Player', GameComponent)
+
+Player.static.canDraw = true
+Player.static.canUpdate = true
 
 function Player:initialize()
 	GameComponent.initialize(self)
+	--temporary
+	self.stage = nil
 	--todo: move visual code to another component
 	self.sprite = nil
 	self.quads = 
@@ -22,8 +25,8 @@ function Player:initialize()
 	self.health = 100
 	self.lives = 5
 	
-	self.vel = Vector.new()
-	self.targetVel = Vector.new() 
+	self.vel = Vector:new()
+	self.targetVel = Vector:new() 
 
 	--constants
 	self.MAXSPEED = 3
@@ -35,9 +38,11 @@ function Player:initialize()
 	print(self.health)
 end
 
---Update various things related to player. Need to call move functions from here.
-function Player:update()
+--Update various things related to player.
 
+function Player:update()
+	self:moveX(self.stage)
+	self:moveY(self.stage)
 end
 
 function Player:moveX(stage)
@@ -57,7 +62,7 @@ function Player:moveX(stage)
 	self.vel.x = self.ACCEL * self.targetVel.x + (1 - self.ACCEL) * self.vel.x
 	if (math.abs(self.vel.x) < self.THRESHOLD) then self.vel.x = 0 end
 	self.gameObject.AABB.pos.x = self.gameObject.AABB.pos.x + self.vel.x
-	local colObs = stage:horizontalCheck()
+	local colObs = stage:horizontalCheck(self.gameObject.AABB, self.facingRight)
 	---for some reason reversing player position update order fixed error
 	--eventually this will be calling a function in the tile itself.
 	for i, other in pairs(colObs) do
@@ -92,7 +97,7 @@ function Player:moveY(stage)
 
 	--Add velocity to position
 	self.gameObject.AABB.pos.y = self.gameObject.AABB.pos.y + self.vel.y
-			local colObs = stage:verticalCheck()
+	local colObs = stage:verticalCheck(self.gameObject.AABB, self.goingUp)
 	self.onGround = false
 
 	for i, other in pairs(colObs) do

@@ -10,7 +10,7 @@ MovingPlatform.__index = MovingPlatform
 ]]--
 function MovingPlatform.new(pos, sprite, cycleTime)
 	local mp = {}
-	mp.path = {pos, Vector.new(200, 350)}
+	mp.path = {pos, Vector:new(200, 350)}
 	--for now only two points.
 	mp.start = mp.path[1]
 	mp.goal = mp.path[2]

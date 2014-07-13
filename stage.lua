@@ -1,13 +1,11 @@
 Stage = {}
 Stage.__index = Stage
 
-function Stage.new(player, platform)
+function Stage.new(platform)
 	local stage = {}
 	stage.tmap = nil
 	stage.tileSize = 32
-	stage.player = player
 	stage.platform = platform
-	stage.obs = {}
 	stage.spriteBatch = nil
 	setmetatable(stage, Stage)
 	return stage
@@ -33,7 +31,7 @@ local function parseMap(self, map)
 	for y = 1, rows do
 		tmap[y] = {}
 		for x = 1, columns do 
-			local tile  = Tile.new(Vector.new((x-1)*self.tileSize,(y-1)*32), 32, map[y][x], map[y][x]) 
+			local tile  = Tile.new(Vector:new((x-1)*self.tileSize,(y-1)*32), 32, map[y][x], map[y][x]) 
 			self.spriteBatch:add(Tile.quads[tile.graphic], (x-1)*self.tileSize, (y-1)*self.tileSize)  --should be addq in final version
 			tmap[y][x] = tile 
 		end  
@@ -49,24 +47,26 @@ local function isSolid(self, x, y)
 		return true
 	else return false end
 end
-local function addTile(self, x, y)
-	table.insert(self.obs, self.tmap[y+1][x+1])
+--todo make this private function with middleclass
+local function addTile(self, objects, x, y)
+	table.insert(objects, self.tmap[y+1][x+1])
 end
 
-
-function Stage:horizontalCheck()
+--TODO: make facingright not a bool (split function up)
+function Stage:horizontalCheck(boundingBox, facingRight)
 	local finished = false
-	local rightEdge = math.floor((self.player.AABB.pos.x + self.player.AABB.width)/self.tileSize)
+	local rightEdge = math.floor((boundingBox.pos.x + boundingBox.width)/self.tileSize)
 	local rightLimit  = rightEdge + 3
-	local topRow = math.floor((self.player.AABB.pos.y)/self.tileSize)
-	local botRow = topRow + math.floor(self.player.AABB.height-1/self.tileSize)
-	if self.player.Player.facingRight then
+	local topRow = math.floor((boundingBox.pos.y)/self.tileSize)
+	local botRow = topRow + math.floor(boundingBox.height-1/self.tileSize)
+	local collidingTiles = {}
+	if facingRight then
 	--look right up to 3
 		for col = rightEdge, rightLimit do 
 			if finished then break end
 			for row = topRow, botRow do
 				if isSolid(self, col, row) then
-					addTile(self, col, row)
+					addTile(self, collidingTiles, col, row)
 					finished = true
 				end
 			end
@@ -74,51 +74,52 @@ function Stage:horizontalCheck()
 	else
 		--We make it one less so that it doesn't treat block below player
 		--as a collision block
-		local leftEdge = math.floor((self.player.AABB.pos.x-1)/self.tileSize)
+		local leftEdge = math.floor((boundingBox.pos.x-1)/self.tileSize)
 		local leftLimit = leftEdge - 3
 		for col = leftEdge, leftLimit, -1 do
 			if finished then break end
 			for row = topRow, botRow do
 				if isSolid(self, col, row) then
-					addTile(self, col, row)
+					addTile(self, collidingTiles, col, row)
 					finished = true
 				end	
 			end
 		end
 	end
-	return self.obs
+	return collidingTiles
 end
 
-function Stage:verticalCheck()
+function Stage:verticalCheck(boundingBox, goingUp)
 	local finished = false
-	local botEdge = math.floor((self.player.AABB.pos.y + self.player.AABB.height)/self.tileSize)
+	local botEdge = math.floor((boundingBox.pos.y + boundingBox.height)/self.tileSize)
 	local botLimit = botEdge + 3
-	local leftEdge = math.floor((self.player.AABB.pos.x)/self.tileSize)
-	local rightEdge = leftEdge + math.floor(self.player.AABB.width/self.tileSize)
-	if (not self.player.Player.goingUp) then
+	local leftEdge = math.floor((boundingBox.pos.x)/self.tileSize)
+	local rightEdge = leftEdge + math.floor(boundingBox.width/self.tileSize)
+	local collidingTiles = {}
+	if (not goingUp) then
 		for row = botEdge, botLimit do
 			if finished then break end
 			for col = leftEdge, rightEdge do
 				if isSolid(self, col, row) then
-					addTile(self, col, row)
+					addTile(self, collidingTiles, col, row)
 					finished = true
 				end
 			end
 		end
 	else
-	local topEdge = math.floor((self.player.AABB.pos.y)/self.tileSize)
-	local topLimit = topEdge - 3
+		local topEdge = math.floor((boundingBox.pos.y)/self.tileSize)
+		local topLimit = topEdge - 3
 		for row = topEdge, topLimit, -1 do
 			if finished then break end
 			for col = leftEdge, rightEdge do
 				if isSolid(self, col, row) then
-					addTile(self, col, row)
+					addTile(self, collidingTiles, col, row)
 					finished = true
 				end
 			end
 		end
 	end
-	return self.obs
+	return collidingTiles
 end
 
 function Stage:load(map)
@@ -134,16 +135,11 @@ end
 
 function Stage:update()
 	time = love.timer.getTime()
-	self.platform:step(time)
-	self.player.Player:moveX(self)
-	for k,v in pairs(self.obs) do self.obs[k]= nil end
-	self.player.Player:moveY(self)
-	for k,v in pairs(self.obs) do self.obs[k]= nil end
+	--self.platform:step(time)
 end
 
 function Stage:draw()
 	love.graphics.draw(self.spriteBatch,0,0)
-	self.player.Player:draw()
 	--self.platform:draw()
 	love.graphics.print("FPS: "..tostring(love.timer.getFPS( )), 10, 10)
 end
