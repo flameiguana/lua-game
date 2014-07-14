@@ -8,9 +8,10 @@ require("inherit")
 require("movingplatform")
 require("gamecomponent")
 require("gameobject")
+require("camera")
+require("tilemap")
 
 
-local framerate = 10
 local stage
 
 function love.load()
@@ -39,14 +40,14 @@ function love.load()
 
 	local playerObject = stage:addGameObject()
 	local playerBox = playerObject:addComponent(AABB)
-	playerBox.position = Vector:new(30,30)
+	playerBox.pos = Vector:new(60,30)
 	playerBox.width = 32
 	playerBox.height = 32
 	local playerScript = playerObject:addComponent(Player)
 	--set values here should use initializer function
 	playerScript.sprite = sprPlayer
 	playerScript.tileMap = stage.tileMap --bad
-
+	stage.camera:follow(playerBox.pos)
 	stage:load()
 end
 
@@ -60,9 +61,6 @@ function love.update(dt)
 	stage:update()
 end
 
-local translation = 0;
 function love.draw()
-	--translation = translation + .5
-	love.graphics.translate(translation, 0)
 	stage:draw()
 end

@@ -1,5 +1,3 @@
-
-
 --Components can be attached to GameObjects.
 GameComponent = class ('GameComponent')
 

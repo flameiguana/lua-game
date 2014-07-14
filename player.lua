@@ -64,7 +64,7 @@ function Player:moveX(tileMap)
 	self.gameObject.AABB.pos.x = self.gameObject.AABB.pos.x + self.vel.x
 	local colObs = tileMap:horizontalCheck(self.gameObject.AABB, self.facingRight)
 	---for some reason reversing player position update order fixed error
-	for i, other in pairs(colObs) do
+	for _, other in pairs(colObs) do
 	 	if self.facingRight then
 			self.gameObject.AABB.pos.x = other.box.pos.x - self.gameObject.AABB.width
 			self.vel.x = 0
@@ -96,7 +96,7 @@ function Player:moveY(tileMap)
 	local colObs = tileMap:verticalCheck(self.gameObject.AABB, self.goingUp)
 	self.onGround = false
 
-	for i, other in pairs(colObs) do
+	for _, other in pairs(colObs) do
 		if (not self.goingUp) then
 			self.gameObject.AABB.pos.y = other.box.pos.y - self.gameObject.AABB.height
 			self.onGround = true

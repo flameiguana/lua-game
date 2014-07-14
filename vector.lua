@@ -44,8 +44,8 @@ function Vector:__le(b)
   return self.x <= b.x and self.y <= b.y
 end
 
-function Vector.__tostring(a)
-  return "(" .. a.x .. ", " .. a.y .. ")"
+function Vector:__tostring()
+  return "(" .. self.x .. ", " .. self.y .. ")"
 end
 
 function Vector:initialize(x, y)
