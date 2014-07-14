@@ -6,7 +6,7 @@ Tile.quads = {}
 Tile.quads[0] = love.graphics.newQuad(0,32,32,32,64,64)
 Tile.quads[1] = love.graphics.newQuad(0,0,32,32,64,64)
 Tile.quads[2] = love.graphics.newQuad(32,0,32,32,64,64)
-
+--todo move callbacks to specific tile type
 --needs to have access to player data. A delegate would allow you to avoid
 --having to pass player, since the function will be in scope
 function Tile:damagePlayer(player)
@@ -21,6 +21,16 @@ function Tile:doNothing(object)
 
 end
 
+--a convenience function that allows for collisioin resolution
+--should be added while the game is running when a player is near the tile
+local count = 0
+function Tile:addBoundingBox(pos, tileSize)
+	self.box = AABB:new(pos, tileSize, tileSize)
+	count = count + 1
+	print(count)
+end
+
+
 Tile.types = 
 {
 	plain =  function(x) Tile:doNothing(x) end,
@@ -28,15 +38,11 @@ Tile.types =
 	removable = function(x) Tile:removeTile(x) end
 }
 
-function Tile.new(pos, tileSize, tileType, graphic)
+function Tile.new(tileType)
 	--dont need pos since t map can take care of that
 	local tile = {}
-	tile.graphic = graphic
 	--this is temporary
 	tile.solid = (tileType ~= 0) or false
-	if tile.solid then
-		tile.box = AABB:new(pos, tileSize, tileSize)
-	end
 	
 	if tileType == 2 then
 		tileType = "damage" 

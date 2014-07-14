@@ -1,8 +1,11 @@
---The game object class supports adding components and retrieving them
+--A gameobject is an object that lets you use built-in and custom components inheriting from the GameComponent  class,
+--which a stage will update and draw for you.
+
 GameObject = class('GameObject')
 
 function GameObject:initialize()
 	self.updatingComponents = nil
+	self.drawingComponents = nil
 end
 
 --TODO, maybe let user initialize object instead of callng default constructor (would imply player is owner though)
@@ -48,4 +51,7 @@ function GameObject:draw()
 		drawingComponents = drawingComponents.next
 	end
 end
+--todo. creates a clean copy of the current object with all scripts re initialized
+function GameObject:clone()
 
+end

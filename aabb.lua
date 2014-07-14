@@ -9,7 +9,7 @@ AABB.__index = AABB
 ]]
 
 --Note: Uses left edge as origin.
-
+--todo: collision masks
 --if we ever allow passing of parameters, we would be ready to go.
 --for now just sets default values when params are nil
 function AABB:initialize(pos, width, height)

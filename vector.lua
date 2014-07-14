@@ -36,12 +36,12 @@ function Vector__eq(b)
   return self.x == b.x and self.y == b.y
 end
 
-function Vector.__lt(a, b)
-  return a.x < b.x or (a.x == b.x and a.y < b.y)
+function Vector:__lt(b)
+  return self.x < b.x or (self.x == b.x and self.y < b.y)
 end
 
-function Vector.__le(a, b)
-  return a.x <= b.x and a.y <= b.y
+function Vector:__le(b)
+  return self.x <= b.x and self.y <= b.y
 end
 
 function Vector.__tostring(a)
